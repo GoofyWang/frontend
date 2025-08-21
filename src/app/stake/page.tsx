@@ -147,15 +147,53 @@ const Index = () => {
                     <div className='flex items-center'>
                         <img src="/images/usdt.svg" alt="" width={40} className='mr-[10px]' />
                         <div>
-                            <div className='text-[14px] opacity-60'>USDT</div>
-                            <div className='text-[18px] font-bold'>Tether</div>
+                            <div  style={{
+                                    color: '#A1A1A1',
+                                    fontFamily: 'Inter',
+                                    fontSize: '13px',
+                                    fontStyle: 'normal',
+                                    fontWeight: 400,
+                                    lineHeight: 'normal'
+                                }}
+                                 className='text-[14px] opacity-60'>USDT</div>
+                            <div  style={{
+                                    color: '#FFF',
+                                    fontFamily: 'Inter',
+                                    fontSize: '16px',
+                                    fontStyle: 'italic',
+                                    fontWeight: 700,
+                                    lineHeight: 'normal'
+                                }}
+                                 className='text-[18px] font-bold'>Tether</div>
                         </div>
                     </div>
                     <Link href='/stake/stakehistory/' className='flex items-center text-inherit no-underline'>
                         <img src="/images/stake.png" alt="" width={40} height={40} className='mr-[10px]' />
                         <div>
-                            <div className='text-[14px] opacity-60'>Pledge record</div>
-                            <div className='text-[18px] font-bold'>Pledge</div>
+                            <div
+                                style={{
+                                    color: '#A1A1A1',
+                                    fontFamily: 'Inter',
+                                    fontSize: '13px',
+                                    fontStyle: 'normal',
+                                    fontWeight: 400,
+                                    lineHeight: 'normal'
+                                }}
+                            >
+                                质押记录
+                            </div>
+                            <div
+                                style={{
+                                    color: '#FFF',
+                                    fontFamily: 'Inter',
+                                    fontSize: '16px',
+                                    fontStyle: 'italic',
+                                    fontWeight: 700,
+                                    lineHeight: 'normal'
+                                }}
+                            >
+                                Pledge
+                            </div>
                         </div>
                     </Link>
                 </div>
