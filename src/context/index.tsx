@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { wagmiAdapter, projectId } from '@/config';
 import { createAppKit } from '@reown/appkit/react'
 import React, { type ReactNode } from "react";
+import UserBootstrap from '@/components/UserBootstrap'
 import { bsc,bscTestnet } from '@reown/appkit/networks'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 
@@ -45,7 +46,10 @@ function ContextProvider({ children }: { children: ReactNode}) {
 
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig as Config} initialState={initialState}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <UserBootstrap />
+        {children}
+      </QueryClientProvider>
     </WagmiProvider>
   )
 }

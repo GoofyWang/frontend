@@ -2,8 +2,11 @@
 import { Button } from 'antd-mobile';
 import {addressFormat} from '@/utils'
 import Link from 'next/link';
+import ConnectWallet from '@/components/ConnectWallet'
+import { useUserStore } from '@/store/user'
 
 export default function Home() {
+  const user = useUserStore.use.user()
   return (
     <div className='text-[#fff] px-[20px] pt-[80px]'>
       <h3 className='opacity-70 mb-[20px]'>A User Aggregation and Project Incubation Platform. </h3>
@@ -12,10 +15,13 @@ export default function Home() {
         <h3 className='text-[30px] font-bold'>ComFox Focus on </h3>
       </div>
       <div>
-        <Link 
-        href='/code'
-        className='!text-[#fff] bg-[#03aac7] text-[18px] text-center  mb-[20px] block rounded-[5px] py-[5px]' 
-        >生成邀请码</Link>
+        {!user && <ConnectWallet />}
+        {user && (
+          <Link 
+            href='/invite'
+            className='!text-[#fff] bg-[#03aac7] text-[18px] text-center  mb-[20px] block rounded-[5px] py-[5px]'
+          >生成邀请码</Link>
+        )}
       </div>
       <ul className='*:mb-[50px]'>
         <li className='bg-gradient-to-b from-[rgba(255,255,255,.1)] to-[rgba(20,20,20,1)] p-[20px]'>

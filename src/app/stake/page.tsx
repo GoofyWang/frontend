@@ -143,13 +143,24 @@ const Index = () => {
                     <img src="/images/binance.svg" alt="" width={20} className='mr-[8px]'/>
                     BNB Chain Market
                 </div>
-                <div className='flex items-center mb-[40px]'>
-                    <img src="/images/usdt.svg" alt="" width={40} className='mr-[10px]' />
-                    <div>
-                        <div className='text-[14px] opacity-60'>USDT</div>
-                        <div className='text-[18px] font-bold'>Tether</div>
+                <div className='grid grid-cols-2 gap-[12px] mb-[40px]'>
+                    <div className='flex items-center'>
+                        <img src="/images/usdt.svg" alt="" width={40} className='mr-[10px]' />
+                        <div>
+                            <div className='text-[14px] opacity-60'>USDT</div>
+                            <div className='text-[18px] font-bold'>Tether</div>
+                        </div>
                     </div>
+                    <Link href='/stake/stakehistory' className='flex items-center text-inherit no-underline'>
+                        <img src="/images/stake.png" alt="" width={40} height={40} className='mr-[10px]' />
+                        <div>
+                            <div className='text-[14px] opacity-60'>Pledge record</div>
+                            <div className='text-[18px] font-bold'>Pledge</div>
+                        </div>
+                    </Link>
                 </div>
+
+                
                 <ul className='grid grid-cols-2 gap-[20px] text-[14px] [&_>li>span]:opacity-70 [&_>li>div]:font-bold [&_>li>div]:text-[18px] [&_>li>div]:text-[#03aac7]'>
                     <li>
                         <span>Reserve Size</span>
@@ -222,6 +233,12 @@ const Index = () => {
                 >
                     Task
                 </Link>}
+                <Link 
+                href='/stake/stakehistory'
+                className='border border-[#666] text-[16px] text-center !text-[#fff] !mt-[10px] block rounded-[5px] py-[3px]'
+                >
+                    质押历史
+                </Link>
                 </div>}
                 {(address && allowance == 0) && <Button 
                 className='!bg-[#03aac7] !text-[18px] !border-0 !text-[#fff]'

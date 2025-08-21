@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import '@ant-design/v5-patch-for-react-19';
-import Header from '@/components/Header';
+import ConditionalHeader from '@/components/ConditionalHeader';
 import './globals.css';
 import ContextProvider from '@/context'
 
@@ -20,7 +20,7 @@ export default function RootLayout({
       <body>
         <ContextProvider>
           <div className="">
-            <Header/>
+            <ConditionalHeader/>
             {children}
           </div>
         </ContextProvider>

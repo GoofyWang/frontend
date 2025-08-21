@@ -6,6 +6,7 @@ import { addressFormat,readClient,walletClient,connect } from '@/utils';
 import { addr_proxy,addr_logic1,addr_logic2 } from '@/constants/coin';
 import {abi_proxy,abi_logic1,abi_logic2} from '@/constants/eth';
 import {ABI_ERC20,ABI_STAKE} from "@/constants/eth";
+import ConnectWallet from '@/components/ConnectWallet';
 
 
 const link = "https://www.bitget.biz/stake?code=";
@@ -15,10 +16,7 @@ const Index = () => {
   const [inviteCode, setInviteCode] = useState('');
   const [isCopied, setIsCopied] = useState(false);
 
-  const getInfo = async () => {
-        if (address) return;
-        await connect();
-    }
+  
 
   const generateInviteCode = () => {
     if (!address) return '';
@@ -93,13 +91,7 @@ const Index = () => {
     >
         生成
     </Button>}
-    {!address && <Button 
-    block
-    className='!text-[#fff] !bg-[#03aac7] !border-0' 
-    onClick={() => getInfo()}
-    >
-        连接钱包
-    </Button>}
+    <ConnectWallet />
     <div className='text-[#fff] mt-[20px] text-[16px]'>
       <p className='mb-[10px]' onClick={getProxy}>您的推荐链接是：</p>
       {inviteCode && <span onClick={copyString}>
