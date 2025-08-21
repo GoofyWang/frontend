@@ -18,6 +18,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   output:'export',
+  trailingSlash: true,
   distDir: 'dist',
   // async rewrites() {
   //   return [

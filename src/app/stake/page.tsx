@@ -151,7 +151,7 @@ const Index = () => {
                             <div className='text-[18px] font-bold'>Tether</div>
                         </div>
                     </div>
-                    <Link href='/stake/stakehistory' className='flex items-center text-inherit no-underline'>
+                    <Link href='/stake/stakehistory/' className='flex items-center text-inherit no-underline'>
                         <img src="/images/stake.png" alt="" width={40} height={40} className='mr-[10px]' />
                         <div>
                             <div className='text-[14px] opacity-60'>Pledge record</div>
