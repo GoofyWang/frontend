@@ -6,7 +6,7 @@ import Header from '@/components/Header'
 export default function ConditionalHeader() {
 	const pathname = usePathname()
 	const router = useRouter()
-	const hideHeader = pathname === '/test' || pathname.startsWith('/invite') || pathname === '/stake/stakehistory'
+	const hideHeader = pathname === '/test' || pathname.startsWith('/invite') || pathname === '/stake/stakehistory' || pathname === '/stake/stakehistory/' || pathname.startsWith('/task') || pathname.startsWith('/reward')
 	if (hideHeader) {
 		return (
 			<div className="relative">

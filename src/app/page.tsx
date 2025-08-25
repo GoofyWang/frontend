@@ -4,11 +4,32 @@ import {addressFormat} from '@/utils'
 import Link from 'next/link';
 import ConnectWallet from '@/components/ConnectWallet'
 import { useUserStore } from '@/store/user'
+import { useState } from 'react'
 
 export default function Home() {
   const user = useUserStore.use.user()
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false)
+  const [buttonClicked, setButtonClicked] = useState(false)
   return (
-    <div className='text-[#fff] px-[20px] pt-[80px]'>
+    <div className='text-[#fff] px-[20px] pt-[20px]'>
+      <div
+        className='flex items-center mb-[20px] cursor-pointer'
+        onClick={() => setShowAnnouncementModal(true)}
+        style={{
+          color: '#FFF',
+          fontFamily: 'Inter',
+          fontSize: '15px',
+          fontStyle: 'italic',
+          fontWeight: 700,
+          lineHeight: 'normal'
+        }}
+      >
+        <img src="/images/nonce.png" alt="logo" className='w-[16px] h-[16px]' />
+        <span className='ml-[10px]'>用户更新公告（支付地址变更）</span>
+      </div>
+
+
+      
       <h3 className='opacity-70 mb-[20px]'>A User Aggregation and Project Incubation Platform. </h3>
       <video src="/images/bitget.mp4" autoPlay loop playsInline muted></video>
       <div className='mt-[30px] mb-[30px]'>
@@ -70,6 +91,59 @@ export default function Home() {
           </li>
         </ul>
       </div>
+
+      {/* 公告弹窗 */}
+      {showAnnouncementModal && (
+        <div className="fixed inset-0 z-[50] bg-[rgba(0,0,0,0.6)] flex items-center justify-center" onClick={() => setShowAnnouncementModal(false)}>
+          <div className="w-[317px] flex-shrink-0 rounded-[15px] bg-[#212121] px-[16px] py-[16px] pl-[50px] pr-[50px] pt-[50px] pb-[50px]" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="text-center mb-[20px]"
+              style={{
+                color: '#FFF',
+                textAlign: 'center',
+                fontFamily: 'Inter',
+                fontSize: '15px',
+                fontStyle: 'italic',
+                fontWeight: 700,
+                lineHeight: 'normal'
+              }}
+            >
+              用户更新公告
+            </div>
+            <div
+              style={{
+                color: '#FFF',
+                textAlign: 'center',
+                fontFamily: 'Inter',
+                fontSize: '13px',
+                fontStyle: 'italic',
+                fontWeight: 200,
+                lineHeight: 'normal'
+              }}
+            >
+              <p className="mb-[10px]">尊敬的用户朋友您好，由于交易所支付端口近期压力巨大，现统一使用合约代码打款，交易所钱包打款功能将在下次更新时正式开启，针对更新前带来的不便敬请谅解。</p>
+            </div>
+
+            <button
+              className='w-full h-[40px] text-[15px] text-center mt-[20px]'
+              style={{ 
+                borderRadius: '5px', 
+                background: buttonClicked ? '#00F4FF' : '#D9D9D9',
+                transition: 'background-color 0.2s ease'
+              }}
+              onClick={() => {
+                setButtonClicked(true)
+                setTimeout(() => {
+                  setShowAnnouncementModal(false)
+                  setButtonClicked(false)
+                }, 200)
+              }}
+            >
+              我已了解
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

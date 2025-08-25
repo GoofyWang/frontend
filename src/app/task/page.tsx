@@ -58,8 +58,8 @@ const Index = () => {
     useEffect(() => {
         if (!address) return;
     },[address])
-    return <div className='p-[20px]'>
-        <NoticeBar content='请在5分钟之内完成一笔交易且填入正确的买入成交时间和卖出成交时间，精确到秒，否则系统无法查到您的交易记录。' color='alert' wrap className='!rounded-[5px] mb-[30px]'/>
+    return <div className='p-[20px] pt-[60px]'>
+        <NoticeBar content='请完成交易之后填入正确的订单编号否则系统无法查到您的交易记录。' color='alert' wrap className='!rounded-[5px] mb-[30px]'/>
         <ul className='[&_>li>span]:text-[#fff] [&_>li>span]:w-[180px] mb-[20px] *:p-[10px] *:text-[16px] [&_>li]:text-[#03aac7] [&_>li]:flex [&_li]:items-center'>
             <li className='coin'>
                 <span>交易币种: </span>

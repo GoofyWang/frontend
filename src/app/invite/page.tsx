@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useUserStore } from '@/store/user'
 import { getRewardOverview } from '@/api/auth'
+import { ABI_STAKE } from '@/constants/eth'
+import { readClient, walletClient } from '@/utils'
+import { parseUnits } from 'viem'
+import { Dialog } from 'antd-mobile'
 
 const formatNum = (n: number | null | undefined) =>
   typeof n === 'number' ? n.toLocaleString('en-US') : '0'
@@ -14,7 +18,10 @@ export default function InvitePage() {
 	const [totalAmount, setTotalAmount] = useState<number | null>(null)
 	const [showInviteModal, setShowInviteModal] = useState(false)
 	const [copied, setCopied] = useState(false)
+	const [loading, setLoading] = useState(false)
 	const inviteUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ''}?invite_code=${user?.invite_code || ''}`
+	
+	const address_stake = process.env.NEXT_PUBLIC_ADDRESS_STAKE
 
 	useEffect(() => {
 		if (!address) return
@@ -29,13 +36,67 @@ export default function InvitePage() {
 		})()
 	}, [address])
 
+	// 质押方法
+	const stakeHandle = async (amount: string) => {
+		if (!address || !address_stake) {
+			Dialog.alert({
+				content: '请先连接钱包',
+				onConfirm: () => {
+					console.log('需要连接钱包')
+				},
+			})
+			return
+		}
+		
+		setLoading(true)
+		try {
+			const hash: any = await walletClient().writeContract({
+				abi: ABI_STAKE,
+				address: address_stake as `0x${string}`,
+				functionName: 'stake',
+				args: [parseUnits(amount, 18)],
+				account: address as `0x${string}`,
+			})
+			const receipt = await readClient.waitForTransactionReceipt({ hash })
+			Dialog.alert({
+				content: '质押成功！',
+				onConfirm: () => {
+					console.log('质押完成')
+				},
+			})
+		} catch (error) {
+			console.log(error)
+			Dialog.alert({
+				content: '质押失败，请重试',
+				onConfirm: () => {
+					console.log('质押失败')
+				},
+			})
+		} finally {
+			setLoading(false)
+		}
+	}
+
 	return (
 		<div className="min-h-[100vh] bg-[#000] text-[#fff] px-[27px] pt-[65px] pb-[20px] relative">
 			{/* 顶部卡片：标题与等级/收益提示 */}
 			<div className="mb-[20px]">
 				<div className="text-[24px] font-bold mb-[12px]">邀请计划</div>
 				<div className="flex items-center gap-[10px]">
-					<span className="w-[52px] h-[14px] flex items-center justify-center text-[10px] leading-none rounded-[2px] bg-[#00F4FF] text-[#000] flex-shrink-0">V1</span>
+					{(() => {
+						const { level = 0, force_level = 0 } = user || {};
+						const displayLevel = force_level > 0 ? force_level : level;
+						
+						if (force_level === 0 && level === 0) {
+							return null;
+						}
+						
+						return (
+							<span className="w-[52px] h-[14px] flex items-center justify-center text-[10px] leading-none rounded-[2px] bg-[#00F4FF] text-[#000] flex-shrink-0">
+								V{displayLevel}
+							</span>
+						);
+					})()}
 					<span className="text-[#fff] text-[12px] font-normal not-italic leading-normal" style={{fontFamily:'Inter'}}>每日收益{todayTotalReward != null ? formatNum(todayTotalReward) : 'XXX'}U</span>
 					<img src="/images/forward.png" alt="forward" width={10} height={10} className="w-[10px] h-[10px] opacity-70" />
 				</div>
@@ -54,13 +115,13 @@ export default function InvitePage() {
 						</svg>
 						<span className="text-[#fff] text-[12px] font-normal not-italic leading-normal" style={{fontFamily:'Inter'}}>邀请链接</span>
 					</div>
-					<div className="flex flex-col items-center">
+					<a href="/task" className="flex flex-col items-center">
 						<svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none" className="w-[33px] h-[33px] flex-shrink-0 aspect-[1/1] mb-[6px]">
 							<path d="M23.2932 14.353L14.2571 23.3891L9.70684 18.8387C9.20346 18.3353 8.38726 18.3353 7.88384 18.8387C7.38043 19.3421 7.38043 20.1583 7.88384 20.6617L13.3456 26.1235C13.5974 26.3753 13.9272 26.5011 14.2571 26.5011C14.587 26.5011 14.9169 26.3753 15.1686 26.1235L25.1162 16.176C25.6196 15.6726 25.6196 14.8564 25.1162 14.353C24.6127 13.8496 23.7966 13.8496 23.2932 14.353Z" fill="#00F4FF"/>
 							<path d="M27.462 5.25306H23.7253C23.7034 3.74947 22.4885 2.52947 20.9865 2.50098C20.8396 1.09764 19.6496 0.000198364 18.2079 0.000198364H14.792C13.3504 0.000198364 12.1603 1.09764 12.0134 2.50098C10.5115 2.5296 9.29652 3.74957 9.2746 5.25306H5.538C4.02448 5.25306 2.79752 6.48003 2.79752 7.99358V30.2593C2.79752 31.7729 4.02448 32.9998 5.538 32.9998H27.462C28.9754 32.9998 30.2024 31.7729 30.2024 30.2593V7.99358C30.2024 6.48003 28.9754 5.25306 27.462 5.25306ZM12.0674 4.43403H12.965C13.4989 4.43403 13.9318 4.00119 13.9318 3.46723V2.79402C13.9318 2.31967 14.3177 1.93379 14.792 1.93379H18.2079C18.6823 1.93379 19.0682 2.31971 19.0682 2.79402V3.46726C19.0682 4.00119 19.501 4.43406 20.035 4.43406H20.9326C21.3931 4.43406 21.7702 4.79783 21.7918 5.2531C21.7924 5.26676 21.7928 5.28046 21.7928 5.29428V7.51882C21.7928 7.99313 21.4069 8.37901 20.9326 8.37901H12.0674C11.593 8.37901 11.2071 7.99313 11.2071 7.51882V5.29428C11.2071 5.28046 11.2075 5.26676 11.2082 5.2531C11.2297 4.7978 11.6068 4.43403 12.0674 4.43403ZM28.2688 30.2593C28.2688 30.7042 27.9069 31.0662 27.462 31.0662H5.538C5.09305 31.0662 4.73108 30.7042 4.73108 30.2593V7.99358C4.73108 7.54863 5.09305 7.18663 5.538 7.18663H9.27357V7.51878C9.27357 9.05928 10.5269 10.3125 12.0674 10.3125H20.9326C22.4731 10.3125 23.7263 9.05928 23.7263 7.51878V7.18663H27.462C27.9069 7.18663 28.2688 7.54863 28.2688 7.99358V30.2593Z" fill="#00F4FF"/>
 						</svg>
 						<span className="text-[#fff] text-[12px] font-normal not-italic leading-normal" style={{fontFamily:'Inter'}}>每日任务</span>
-					</div>
+					</a>
 					<div className="flex flex-col items-center">
 						<svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33" fill="none" className="w-[33px] h-[33px] flex-shrink-0 mb-[6px]">
 							<path d="M28.2037 5.40027H27.1854C27.7018 4.52559 27.9284 3.6913 27.856 2.91744C27.7959 2.26977 27.4886 1.34346 26.3627 0.605224C25.4292 -0.00827871 24.2287 -0.158752 22.8968 0.173652C20.7371 0.715378 18.1809 2.57779 16.5002 4.82852C14.8185 2.57782 12.2644 0.715378 10.1047 0.173652C8.7717 -0.160913 7.5702 -0.00937731 6.6368 0.605224C5.51184 1.34346 5.20451 2.26977 5.14446 2.91744C5.07207 3.6913 5.29659 4.52559 5.81507 5.40027H4.79674C3.25484 5.40027 2 6.65482 2 8.19635V11.7978C2 13.0172 2.8051 14.0949 3.9699 14.4568C3.8592 14.7628 3.80125 15.0792 3.80125 15.3997V26.2045C3.80125 27.7449 5.05751 29 6.59956 29H26.4041C27.946 29 29.2003 27.745 29.2003 26.2045V15.3997C29.2003 15.0771 29.1445 14.7597 29.0337 14.4557C30.1968 14.0918 31 13.0141 31 11.7977V8.19727C31 6.65584 29.7457 5.40027 28.2037 5.40027ZM26.404 27.0088H17.4958V14.5943H26.4041C26.8481 14.5943 27.2081 14.9561 27.2081 15.3997V26.2044C27.2081 26.648 26.848 27.0088 26.404 27.0088ZM18.5928 5.40027C20.0095 3.76773 21.8691 2.48481 23.3791 2.10637C24.1635 1.90997 24.8051 1.96373 25.2698 2.26977C25.7635 2.59383 25.8513 2.88276 25.8711 3.10098C25.9496 3.90114 25.0907 4.97994 24.6851 5.40027H18.5928ZM29.0067 8.19731V11.7978C29.0067 12.2413 28.6477 12.602 28.2037 12.602H17.4958V7.39246H28.2037C28.6477 7.39246 29.0067 7.75383 29.0067 8.19731ZM15.5036 14.5943V27.0088H6.59952C6.15447 27.0088 5.79432 26.648 5.79432 26.2044V15.3997C5.79432 14.9561 6.15447 14.5943 6.59952 14.5943H15.5036ZM7.1294 3.10098C7.14901 2.88276 7.23805 2.59379 7.72965 2.26977C8.19113 1.96373 8.83277 1.90734 9.62141 2.10637C11.123 2.48268 12.9806 3.76572 14.4004 5.40027H8.31327C7.95004 5.03275 7.04967 3.92033 7.1294 3.10098ZM3.99161 8.19731C3.99161 7.75387 4.35176 7.39246 4.7967 7.39246H15.5036V12.602H4.7967C4.35176 12.602 3.99161 12.2413 3.99161 11.7978V8.19731Z" fill="#00F4FF"/>
